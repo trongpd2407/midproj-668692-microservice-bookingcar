@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt vé xe</title>
+    <style>
+        body {
+            display: block;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .center-content {
+            position: relative;
+            width: 90%;
+            margin: 0 auto
+        }
+        .content-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%
+        }
+
+        h3 {
+            margin-bottom: 0.1em;
+        }
+
+        #booking-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .card {
+                height: 250px;
+                display: flex;
+                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+                transition: 0.3s;
+                width: 80%;
+                margin: 0 auto 20px; /* Canh giữa và cách dưới 20px */
+                overflow: hidden;
+                padding: 20px;
+                border-radius: 30px; /* Bo tròn các góc của thẻ card */
+                background-color: white;
+            }
+
+
+            .card img {
+                width: 150px;
+                height: auto;
+                object-fit: cover;
+                padding: 10px; /* Thêm padding cho hình ảnh */
+                width: 30%; /* Đặt kích thước hình ảnh */
+            }
+
+            .card-content {
+                flex: 1;
+                padding: 10px;
+            }
+
+            .search-form {
+                margin-bottom: 20px;
+                display: block;
+                flex-direction: column;
+                align-items: center;
+                font-size: 1.2em; /* Tăng kích thước font chữ */
+            }
+
+            .search-form label,
+            .search-form input[type="text"],
+            .search-form input[type="date"],
+            .search-form input[type="submit"] {
+                margin: 5px; /* Khoảng cách giữa các thành phần */
+            }
+            .search-form label {
+                font-size: 22px;
+                font-weight: 600
+            }
+
+            .search-form input[type="text"],
+            .search-form input[type="date"],
+            .search-form input[type="submit"] {
+                padding: 8px; /* Tăng kích thước padding */
+                border-radius: 5px;
+            }
+
+            .search-form input[type="submit"] {
+                padding: 10px 40px; /* Tăng kích thước padding */
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+
+            .search-form label,
+            .search-form input[type="text"],
+            .search-form input[type="date"],
+            .search-form input[type="submit"],
+            .search-form img {
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: 10px; /* Khoảng cách giữa các phần tử */
+            }
+
+            .search-form input[type="submit"] {
+                margin-right: 0; /* Đặt lại margin cho nút submit */
+            }
+
+            .search-form img {
+                cursor: pointer;
+            }
+
+
+            .api-link {
+                text-align: right;
+                margin-top: 20px;
+            }
+
+            .api-link a {
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+            }
+
+            .button-container {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 20px;
+                margin-right: 50px;
+            }
+
+            .button-container button {
+                padding: 10px 30px; /* Tăng kích thước padding */
+                background-color: #4CAF50;
+                color: white;
+                font-size: 16px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+        }
+        #trip-container {
+            position: fixed;
+            top: 42%; /* Đặt top ở giữa màn hình */
+            left: 50%; /* Đặt left ở giữa màn hình */
+            transform: translate(-50%, -50%); /* Dịch chuyển container đi 50% của kích thước của nó theo cả hai chiều */
+            z-index: 9999; /* Đảm bảo container hiển thị tr */
+            width: 80%;
+            .card-container {
+                display: flex;
+                flex-direction: column;
+                align-items: end;
+                width: 100%;
+            }
+
+            .card {
+                height: 450px;
+                display: inline-block;
+                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+                transition: 0.3s;
+                width: 100%;
+                margin: 0 auto 20px; /* Canh giữa và cách dưới 20px */
+                overflow: hidden;
+                padding-bottom: 20px;
+                border-radius: 30px; /* Bo tròn các góc của thẻ card */
+                background-color: white;
+            }
+
+            .card img {
+                width: auto;
+                height: auto;
+                object-fit: cover;
+                padding: 10px; /* Thêm padding cho hình ảnh */
+                width: 40%; /* Đặt kích thước hình ảnh */
+            }
+
+            .card-content {
+                flex: 1;
+                padding: 10px;
+            }
+
+            .search-form {
+                margin-bottom: 20px;
+            }
+
+            .search-form input[type="text"] {
+                padding: 5px;
+                width: 150px;
+            }
+
+            .search-form input[type="submit"] {
+                padding: 5px 10px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+
+            .api-link {
+                text-align: right;
+                margin-top: 20px;
+            }
+
+            .api-link a {
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+            }
+
+            .button-container {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 10px;
+            }
+
+            .button-container button {
+                padding: 5px 10px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                cursor: pointer;
+                margin-left: 10px;
+                font-size: 20px;
+            }
+
+            .seat-selection {
+                display: flex;
+                align-items: center;
+            }
+
+            .seat-selection label {
+                margin-bottom: 5px;
+            }
+
+            .quantity-selector {
+                display: flex;
+                align-items: center;
+            }
+
+            .quantity-button {
+                padding: 0px 10px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+
+            input[type="number"] {
+                width: 50px;
+                padding: 5px;
+                margin: 0 5px;
+                text-align: center;
+            }
+        }
+
+        /* CSS */
+        #head-content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background-color: #2474e5;
+            padding: 5px 0px 5px 30px;
+            display: flex;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #booking-container {
+            position: fixed;
+            top: 80px; /* Để form xuất hiện dưới phần header */
+            left: 0;
+            right: 0;
+            background-color: #f8f9fa;
+            padding: 20px;
+            z-index: 9999; /* Đảm bảo form hiển thị phía trước */
+        }
+
+        #form-user {
+            h1 {
+                text-align: center;
+            }
+            .container {
+                margin-top: 10px;
+                text-align: center;
+            }
+
+            .form-group {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+
+            .user-info {
+                padding: 10px;
+                width: 300px;
+                margin: 0;
+                background-color: #fff;
+                border-radius: 10px;
+            }
+
+            label {
+                font-weight: bold;
+                margin-bottom: 5px;
+                display: block;
+            }
+
+            input {
+                width: 100%;
+                padding: 8px;
+                box-sizing: border-box;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            button {
+                margin-top: 15px;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            button.cancel {
+                background-color: #6c757d;
+                margin-right: 10px;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+<div id="body-content">
+    <div id="head-content" style="background-color: #2474e5; height: 80px; padding: 5px 0px 5px 30px; display: flex; align-items: center;">
+        <a href="index.html"><img style="height: 70px; width: auto" src="https://i.imgur.com/gQjBbOS.png"></a>
+        <span style="color: white; margin-left: 30px; font-size: 40px; font-weight: 600; flex: 1;">Vé Xe Khách</span>
+        <span style="color: white; margin-right: 20px; font-size: 20px; font-weight: 600;">Hotline: 0865 873 283</span>
+    </div>
+
+
+    <div class="center-content">
+        <div class="content-container">
+            <div id="booking-container" style="width: 100%;">
+                <!-- Search Form -->
+                <div class="container" style="margin-top: 20px; display: flex; justify-content: center">
+
+                    <form id=="search-form" class="search-form"  onsubmit="searchTrips(event)">
+                        <label for="booking-don">Xuất phát:</label>
+                        <input type="text" id="booking-don" name="booking-don" placeholder="Nhập tỉnh bắt đầu" required>
+                        <img id= "swap" style="margin-bottom: 0; height: 30px; width: auto" onclick="switchLocation()" src="https://i.imgur.com/MPYwLBq.png">
+                        <label for="booking-tra">Điểm đến:</label>
+                        <input type="text" id="booking-tra" name="booking-tra" placeholder="Nhập tỉnh muốn đến" required>
+                        <label for="date">Chọn ngày đi:</label>
+                        <input type="date" id="date" name="date" min="yyyy-mm-dd" required>
+                        <input type="submit" style="font-size: 15px" value="Tìm kiếm">
+                    </form>
+
+                </div>
+
+                <!-- Card View -->
+                <div class="container" id="tripContainer" style="width: 90%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div id="trip-container" class="container" style="margin-top: 50px; display: flex;">
+        <div class="card-container" style="display: flex;">
+            <div style="margin-right: 0;">
+                <img id="cancel" src="https://i.imgur.com/jgkLDnq.png" style="height: 50px; width: 50px;" onclick="cancel()">
+            </div>
+            <div class="card" style="display: inline-block; justify-content: center; align-items: center; align-self: center; height: auto">
+                <div style="display: flex; height: auto">
+                    <img id="tripImage" alt="Trip Image" style="height: 250px; margin: 20px; width: 350px">
+                    <div style="display: block; width: 100%">
+                        <div style="display: flex;">
+                            <div class="card-content">
+                                <h3>Nhà xe <b><span id="tripName"></span></b></h3>
+                                <p>Khởi hành: <span id="don"></span> - <span id="donTime"></span></p>
+                                <p>Kết thúc: <span id="tra"></span> - <span id="traTime"></span></p>
+                                <p>SĐT: <span id="phone"></span></p>
+                                <h3>Chọn điểm đón</h3>
+                                <div class="card-content locations1" id="locations_di">
+                                    <!-- Locations for outbound trip will be populated here -->
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <h3><span> &nbsp; </span></h3>
+                                <p>Biển số: <span id="bienSo"></span></p>
+                                <p>Giá vé: <span id="price"></span>đ</p>
+                                <p>Số ghế còn lại: <span id="quantity_remain"></span></p>
+                                <h3>Chọn điểm trả</h3>
+                                <div class="card-content locations2" id="locations_ve">
+                                    <!-- Locations for return trip will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: inline-block; margin-left: 10px; margin-top: 0">
+                            <div class="seat-selection">
+                                <h3 style="margin-right: 20px; margin-top: 0" >Chọn số lượng khách </h3>
+                                <div class="quantity-selector">
+                                    <button class="quantity-button" type="button" onclick="decreaseValue('quantity')" style="font-weight: 800; font-size: 20px; border-radius: 6px;">-</button>
+                                    <input type="text" id="quantity" name="quantity" min="1" max="50" value="1" style="width:40px; height: 20px; text-align: center; margin: 5px; font-size: 24px; border: none" readonly>
+                                    <button class="quantity-button" type="button" onclick="increaseValue('quantity')" style="font-weight: 800; font-size: 20px; border-radius: 6px;">+</button>
+                                </div>
+                                <div style="margin-left: 20px">
+                                    <h3 id="total-cost" style="margin-right: 20px; margin-top: 0"></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex;">
+                    <div id="form-user" style="margin-top: 0px; display: block; padding-left: 320px; justify-content: left; width: 80%; align-self: flex-start;">
+                        <!-- <h3 style="margin-left: 10px">Nhập thông tin liên hệ</h3> -->
+                        <div class="user-info">
+                            <div class="form-group">
+                                <label>Nhập họ và tên:</label>
+                                <input type="text" id="name" name="name" required minlength="2" maxlength="255" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nhập email:</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nhập số điện thoại:</label>
+                                <input type="text" id="sdt" name="sdt" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-container" style="margin-right: 50px; font-size: 30px; height: 35px; width: 20%; align-self: flex-end">
+                        <button type="button" style="height: 40px; border-radius: 8px;" onclick="saveBill()">Đặt vé ngay</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+    window.onload = function() {
+        document.getElementById("trip-container").style.display = "none";
+    };
+    function switchLocation(){
+        // Lấy giá trị của input địa điểm xuất phát và đích đến
+        var donInput = document.getElementById("booking-don");
+        var traInput = document.getElementById("booking-tra");
+
+        // Lấy giá trị hiện tại của input
+        var donValue = donInput.value;
+        var traValue = traInput.value;
+
+        // Đảo chỗ giá trị của hai input
+        donInput.value = traValue;
+        traInput.value = donValue;
+    }
+
+    // Lấy ngày hiện tại
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; // Tháng bắt đầu từ 0
+    var yyyy = today.getFullYear();
+
+    // Định dạng lại ngày hiện tại thành yyyy-mm-dd
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+    today = yyyy + '-' + mm + '-' + dd;
+
+    // Đặt thuộc tính min của trường bookingDate
+    document.getElementById('date').setAttribute('min', today);
+    var list_trip;
+    var trip;
+    function searchTrips(event) {
+        event.preventDefault();
+
+        const date = document.getElementById('date').value;
+        const don = document.getElementById('booking-don').value;
+        const tra = document.getElementById('booking-tra').value;
+
+        const apiUrl = `http://localhost:8765/booking-service/booking/list?date=${date}&don=${don}&tra=${tra}`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(trips => {
+                const tripContainer = document.getElementById('tripContainer');
+                tripContainer.innerHTML = ''; // Clear previous results
+
+                if (trips.length === 0) {
+                    // Không có chuyến xe nào phù hợp
+                    const noTripMessage = `<div style="text-align: center; margin-top: 20px; font-weight: bold;">Không có chuyến xe nào phù hợp!</div>`;
+                    tripContainer.insertAdjacentHTML('beforeend', noTripMessage);
+                }
+
+                list_trip = trips;
+
+                trips.forEach(trip => {
+                    const card = `
+                        <div class="card">
+                            <img src="${trip.image}" alt="Trip Image">
+                            <div class="card-content">
+                                <h3>Nhà xe <b>${trip.name}</b></h3>
+                                <p>Khởi hành: ${trip.don} - ${trip.donTime}</p>
+                                <p>Kết thúc: ${trip.tra} - ${trip.traTime}</p>
+                                <p>SĐT: ${trip.phone}</p>
+                            </div>
+                            <div class="card-content">
+                                <h3><b>&nbsp;</b></h3>
+                                <p>Biển số: ${trip.bienSo}</p>
+                                <p>Giá vé: ${trip.price}</p>
+                                <p>Số ghế còn lại: ${trip.quantity}</p>
+                                <div class="button-container">
+                                    <button type="button" onclick="navigateToTripPage(${trips.indexOf(trip)})">Chọn</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    `;
+                    tripContainer.insertAdjacentHTML('beforeend', card);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
+    function navigateToTripPage(index) {
+        document.getElementById("booking-container").style.opacity = '0.5';
+        document.getElementById("trip-container").style.display = "block";
+        trip = list_trip[index];
+        resetRadioButtons();
+        getAllLocation();
+    }
+
+    function cancel(){
+        document.getElementById("trip-container").style.display = "none";
+        document.getElementById("booking-container").style.opacity = '1';
+    }
+
+    //TripJS
+    function decreaseValue(inputId) {
+        var input = document.getElementById(inputId);
+        var value = parseInt(input.value);
+        if (value > input.min) {
+            input.value = value - 1;
+        }
+        totalCost(); // Gọi hàm totalCost sau khi giá trị thay đổi
+    }
+
+    function increaseValue(inputId) {
+        var input = document.getElementById(inputId);
+        var value = parseInt(input.value);
+        if (value < input.max) {
+            input.value = value + 1;
+        }
+        totalCost(); // Gọi hàm totalCost sau khi giá trị thay đổi
+    }
+
+    function totalCost() {
+        var quantity = parseInt(document.getElementById("quantity").value);
+        var price = parseInt(document.getElementById("price").textContent); // Lấy giá vé từ textContent
+        var total = quantity * price;
+        document.getElementById("total-cost").textContent = "Tổng thanh toán: " + total + "đ"; // Gán giá trị mới cho thẻ h3
+    }
+
+    function resetRadioButtons() {
+        // Lấy các container chứa radiobuttons
+        const locationContainers = document.querySelectorAll('.locations1, .locations2');
+
+        // Duyệt qua từng container và xoá sạch radiobuttons bên trong
+        locationContainers.forEach(container => {
+            container.innerHTML = '';
+        });
+    }
+    function getAllLocation(){
+        // Kiểm tra xem trip có tồn tại không
+        if (!trip) {
+            console.error('Trip không tồn tại.');
+            return;
+        }
+
+        document.getElementById("tripImage").src = trip.image;
+        document.getElementById("tripName").textContent = trip.name;
+        document.getElementById("don").textContent = trip.don;
+        document.getElementById("donTime").textContent = trip.donTime;
+        document.getElementById("tra").textContent = trip.tra;
+        document.getElementById("traTime").textContent = trip.traTime;
+        document.getElementById("phone").textContent = trip.phone;
+        document.getElementById("bienSo").textContent = trip.bienSo;
+        document.getElementById("price").textContent = trip.price;
+        document.getElementById("quantity_remain").textContent = trip.quantity;
+        totalCost();
+
+        const apiUrl = `http://localhost:8765/booking-service/booking/get-location?id_trip=${trip.id}`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(list => {
+                // Populate the HTML with locations data
+                list.forEach((locations, index) => { // Duyệt qua các mảng trong list
+                    locations.forEach((location, locationIndex) => { // Duyệt qua các phần tử trong mỗi mảng
+                        const radioInput = document.createElement('input');
+                        radioInput.setAttribute('type', 'radio');
+                        radioInput.setAttribute('name', 'location_' + index); // Sử dụng name để chỉ cho phép chọn 1 trong mỗi nhóm
+                        radioInput.setAttribute('value', location.name); // Lưu giá trị của radio button
+                        if (locationIndex === 0) { // Chỉ đặt checked cho nút radio đầu tiên trong mảng đầu tiên
+                            radioInput.setAttribute('checked', 'checked');
+                        }
+                        // Tiếp tục cài đặt các thuộc tính khác cho radioInput
+
+                        // Create label element
+                        const label = document.createElement('label');
+                        label.textContent = location.name; // Assuming location object has a name property
+                        // Optionally, set other attributes such as for, class, etc.
+
+                        // Append radio input and label to the container element
+                        const container = document.querySelector('.locations' + (index + 1)); // Sử dụng index để xác định container
+                        container.appendChild(radioInput);
+                        container.appendChild(label);
+                        container.appendChild(document.createElement('br'));
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+
+    }
+
+    function saveBill(){
+        let id_client;
+        var bill;
+        const date = document.getElementById('date').value;
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const sdt = document.getElementById('sdt').value;
+        const client = {
+            name: name,
+            email: email,
+            sdt: sdt
+        };
+        const location_di = document.querySelector('input[name="location_0"]:checked').value;
+        const location_ve = document.querySelector('input[name="location_1"]:checked').value;
+        const quantity = document.getElementById("quantity").value;
+        const apiUrlClient = 'http://localhost:8082/booking/saveClient';
+
+        fetch(apiUrlClient, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(client)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); // Chuyển đổi response sang JSON
+                } else {
+                    throw new Error('Có lỗi xảy ra khi gửi dữ liệu.');
+                }
+            })
+            .then(idClient => {
+                // Lưu dữ liệu client từ response vào biến client2
+                id_client = idClient;
+
+                // Tạo đối tượng Bill
+                bill = {
+                    idTrip: trip.id,
+                    date: date, // Thêm ngày hiện tại
+                    time: null, // Thêm thời gian hiện tại
+                    idClient: id_client, // Sử dụng ID của khách hàng
+                    quantity: quantity,
+                    don: location_di,
+                    tra: location_ve,
+                    createDate: null // Thêm ngày tạo
+                }
+                console.log(bill);
+
+                const apiUrl = 'http://localhost:8082/booking/save-bill';
+
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bill)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json(); // Chuyển đổi response sang JSON
+                        } else {
+                            throw new Error('Có lỗi xảy ra khi gửi dữ liệu.');
+                        }
+                    })
+                    .then(idBill => {
+                        const apiUrl = `http://localhost:8082/booking/sendMail?billId=` + idBill;
+
+                        fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                // Trả về kết quả boolean từ body của response
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log(data);
+                                // Xử lý kết quả boolean ở đây
+                                if (data == true) {
+                                    alert('Đặt vé thành công, thông tin đặt vé đã được gửi về email!');
+                                    cancel();
+                                } else {
+                                    alert('Đã có lỗi xảy ra, vui lòng thử lại!');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                                // Nếu có lỗi, cũng alert là đã có lỗi xảy ra
+                                alert('Đã có lỗi xảy ra, vui lòng thử lại!');
+                            });
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+                    });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+            });
+    }
+
+</script>
+</body>
+</html>
